@@ -1,0 +1,11 @@
+*
+!*/
+
+!/*/main/**
+!/_cfg/**
+!.gitignore
+
+**/*.pyc
+**/.idea
+
+/_cfg/host.cfg

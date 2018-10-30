@@ -1,0 +1,34 @@
+Title: Install alt_proc at new host
+Root:
+    adduser alt_proc
+    mkdir /alt_proc
+    chown alt_proc:alt_proc -R /alt_proc/
+    apt-get install mc
+PG:
+    install:
+        https://www.postgresql.org/download/linux/ubuntu/
+        wget -q https://www.postgresql.org/media/keys/ACCC4CF8.asc -O- | sudo apt-key add -
+        "deb http://apt.postgresql.org/pub/repos/apt/ bionic-pgdg main" | sudo tee /etc/apt/sources.list.d/postgresql.list
+        apt update
+        apt install -y postgresql-10
+        systemctl start postgresql
+    user postgres:
+        passwd postgres
+        su postgres
+        psql
+        \password
+    remote access:
+        postgresql.conf:
+            listen_addresses = 'localhost'
+        pg_hba.conf:
+            host    all             all              0.0.0.0/0                       md5
+    alt_proc:
+        Role alt_proc
+Key access:
+    putty generate pub and ppk key
+    $ mkdir ~/.ssh
+    $ mcedit ~/.ssh/pub
+    $ ssh-keygen -i -f ~/.ssh/pub >> ~/.ssh/authorized_keys
+Anaconda:
+    $ curl -O <anaconda3 linux url>
+    /alt_proc/anaconda3/

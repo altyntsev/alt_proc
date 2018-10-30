@@ -1,0 +1,99 @@
+/**
+ * Version 10.04.2018
+ */
+body { margin-bottom: 2rem; }
+.fi-down-triangle:before { content: "▼"; }
+.hidden { display: none !important; }
+.tag-error, .tag-error[type="radio"] + label {
+     background: #fcd6d6;
+     box-shadow:0px 0px 10px #fcd6d6;
+}
+::-webkit-file-upload-button {
+    cursor:pointer;
+}
+.grid-align-center {
+    margin: 0 auto;
+}
+.ws-nowrap {white-space: nowrap;}
+/******** >> foundation ***********/
+.grid-container {
+    margin-top: 1.4rem;
+}
+.expanded {
+    display: block;
+    width: 100%;
+    margin-right: 0;
+    margin-left: 0;
+}
+.cell-padding-3 .cell { padding:0 3px;}
+.top-bar .top-bar-left, .top-bar .top-bar-right { flex: 0 0 auto }
+/******** << foundation ***********/
+
+/******** >> size *****************/
+.width100 {width: 100px;}
+.width200 {width: 200px;}
+.width300 {width: 300px;}
+.max-width300 {max-width: 300px;}
+/******** << size *****************/
+
+/******** >> align ****************/
+.tal {text-align: left;}
+.tac {text-align: center;}
+.tar {text-align: right;}
+/******** << align ****************/
+
+/******** >> flex ****************/
+.flex-container,.flex-container-m {display: flex;}
+.flex-container-m > *:not(:last-child) {margin-right: 3px;}
+.ai-start { align-items: flex-start; }
+.ai-end { align-items: flex-end; }
+.ai-center { align-items: center; }
+.ai-stretch { align-items: stretch; }
+.ai-baseline { align-items: baseline; }
+.jc-start { justify-content: flex-start; }
+.jc-end { justify-content: flex-end; }
+.jc-center { justify-content: center; }
+.jc-space-between { justify-content: space-between; }
+.jc-space-around { justify-content: space-around; }
+/******** << flex ****************/
+
+/******** >> alertModal ****************/
+#am-overlay {
+	position: fixed;
+	height: 100%;
+	width: 100%;
+	top: 0;
+	left: 0;
+	background: rgba(0,0,0,.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#am-win {
+    margin: 1rem;
+    padding: 1rem 0.5rem;
+    max-width: 30rem;
+    max-height: 20rem;
+	background: #fefefe;
+	border: 1px solid #cacaca;
+}
+
+#am-content {
+    padding: 1rem;
+    max-height: 16rem;
+    overflow: auto;
+    text-align: center;
+}
+#am-buttons {
+    text-align: center;
+    padding: 0.5rem;
+    /*height: 5rem;*/
+}
+#am-buttons > :not(:first-child) {
+    margin-left: 1rem;
+}
+/******** << alertModal ****************/
+
+/******** >> margin padding ****************/
+.p-top-1r { padding-top: 1rem; }
+/******** << margin padding ****************/

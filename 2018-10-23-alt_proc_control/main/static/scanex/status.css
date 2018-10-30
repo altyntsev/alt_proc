@@ -1,0 +1,121 @@
+.STOP  {
+    background-color: red;
+    color: white;
+}
+.FATAL  {
+    color: red;
+}
+.ERRORS {
+    color: red;
+}
+.ERROR {
+    color: red !important;
+}
+.WAIT  {
+    background-color: yellow;
+    color: black;
+}
+.SUCCESS  {
+    background-color: #335c32;
+    color: white;
+    padding-left: 1px;
+    padding-right: 1px;
+}
+.USED {
+    background-color: #335c32;
+    color: white;
+}
+.DONE {
+    background-color: #335c32;
+    color: white;
+}
+.RUN  {
+    background-color: green;
+    color: white;
+    padding-left: 1px;
+    padding-right: 1px;
+}
+.RUN_None {
+    background-color: green;
+    color: white;
+}
+.PAUSE  {
+    background-color: grey;
+    color: black;
+}
+.OBSOLETE {
+    background-color: lightgrey;
+}
+.ACTIVE {
+    background-color: green;
+    color: white;
+}
+.NOT_ACTIVE {
+    background-color: lightgrey;
+}
+.RERUN {
+    color: purple;
+}
+.INFO {
+
+}
+.TODO {
+    background-color: red;
+    color: white;
+    padding: 2px;
+}
+.DEBUG {
+    background-color: blue;
+    color: white;
+}
+
+.script {
+    display:inline;
+    padding: 4px 2px 4px 2px;
+    cursor: pointer;
+}
+
+.EVENTS {
+    background-color: yellow;
+    font-style: oblique;
+}
+
+.WAIT {
+    background-color: yellow;
+}
+.WAIT_None {
+    background-color: yellow;
+}
+.WAIT_SUCCESS  {
+    background-color: yellow;
+}
+.WAIT_FATAL  {
+    background-color: yellow;
+    color: red;
+}
+.WAIT_TODO  {
+    background-color: red;
+    color: yellow;
+}
+
+.RUN_SUCCESS  {
+    background-color: green;
+    color: white;
+}
+.RUN_FATAL  {
+    background-color: green;
+    color: pink;
+}
+.RUN_TODO  {
+    background-color: red;
+    color: pink;
+}
+
+.DONE_FATAL  {
+    background-color: #335c32;
+    color: pink;
+}
+.DONE_SUCCESS  {
+    background-color: #335c32;
+    color: white;
+}
