@@ -3,25 +3,25 @@ Root:
     adduser alt_proc
     mkdir /alt_proc
     chown alt_proc:alt_proc -R /alt_proc/
-    apt-get install mc
+    apt install mc curl p7zip-full
 PG:
     install:
-        https://www.postgresql.org/download/linux/ubuntu/
-        wget -q https://www.postgresql.org/media/keys/ACCC4CF8.asc -O- | sudo apt-key add -
-        "deb http://apt.postgresql.org/pub/repos/apt/ bionic-pgdg main" | sudo tee /etc/apt/sources.list.d/postgresql.list
-        apt update
-        apt install -y postgresql-10
-        systemctl start postgresql
+        https://wiki.postgresql.org/wiki/Apt
+        \# cat /etc/os-release
+        \# wget -q https://www.postgresql.org/media/keys/ACCC4CF8.asc -O- | sudo apt-key add -
+        \# echo "deb http://apt.postgresql.org/pub/repos/apt/ stretch-pgdg main" | sudo tee /etc/apt/sources.list.d/postgresql.list
+        \# apt update
+        \# apt install -y postgresql-10
+        \# systemctl start postgresql
     user postgres:
-        passwd postgres
-        su postgres
-        psql
+        sudo -u postgres psql
         \password
     remote access:
-        postgresql.conf:
+        \# mcedit /etc/postgresql/10/main/postgresql.conf
             listen_addresses = 'localhost'
-        pg_hba.conf:
-            host    all             all              0.0.0.0/0                       md5
+        \# mcedit /etc/postgresql/10/main/pg_hba.conf
+            host all all 0.0.0.0/0 md5
+        \# systemctl restart postgresql
     alt_proc:
         Role alt_proc
 Key access:
@@ -29,6 +29,17 @@ Key access:
     $ mkdir ~/.ssh
     $ mcedit ~/.ssh/pub
     $ ssh-keygen -i -f ~/.ssh/pub >> ~/.ssh/authorized_keys
-Anaconda:
+Python:
     $ curl -O <anaconda3 linux url>
     /alt_proc/anaconda3/
+    alt_path -> /alt_proc/anaconda3/lib/python3.7/site-packages
+    ipython_config.py -> ~/.ipython/profile_default
+    ipython_startup.py -> ~/.ipython/profile_default/startup
+    pip install psycopg2 cherrypy
+wd:
+    /alt_proc/wd/
+    /alt_proc/wd/manager/
+        run.cfg
+    /alt_proc/wd/control/
+        run.bash
+

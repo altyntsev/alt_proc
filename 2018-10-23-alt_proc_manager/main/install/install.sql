@@ -5,7 +5,7 @@
 -- Dumped from database version 10.5
 -- Dumped by pg_dump version 10.5
 
--- Started on 2018-10-27 16:41:42
+-- Started on 2018-11-13 18:23:30
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -26,7 +26,7 @@ CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
 
 
 --
--- TOC entry 2896 (class 0 OID 0)
+-- TOC entry 2893 (class 0 OID 0)
 -- Dependencies: 1
 -- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner:
 --
@@ -39,12 +39,12 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
--- TOC entry 196 (class 1259 OID 16767)
+-- TOC entry 196 (class 1259 OID 17067)
 -- Name: cmds; Type: TABLE; Schema: public; Owner: alt_proc
 --
 
 CREATE TABLE public.cmds (
-    id integer NOT NULL,
+    cmd_id integer NOT NULL,
     name character varying NOT NULL,
     params json,
     status character varying DEFAULT 'WAIT'::character varying NOT NULL,
@@ -56,7 +56,7 @@ CREATE TABLE public.cmds (
 ALTER TABLE public.cmds OWNER TO alt_proc;
 
 --
--- TOC entry 197 (class 1259 OID 16774)
+-- TOC entry 197 (class 1259 OID 17075)
 -- Name: cmds_id_seq; Type: SEQUENCE; Schema: public; Owner: alt_proc
 --
 
@@ -72,23 +72,23 @@ CREATE SEQUENCE public.cmds_id_seq
 ALTER TABLE public.cmds_id_seq OWNER TO alt_proc;
 
 --
--- TOC entry 2897 (class 0 OID 0)
+-- TOC entry 2894 (class 0 OID 0)
 -- Dependencies: 197
 -- Name: cmds_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: alt_proc
 --
 
-ALTER SEQUENCE public.cmds_id_seq OWNED BY public.cmds.id;
+ALTER SEQUENCE public.cmds_id_seq OWNED BY public.cmds.cmd_id;
 
 
 --
--- TOC entry 198 (class 1259 OID 16776)
+-- TOC entry 198 (class 1259 OID 17077)
 -- Name: events; Type: TABLE; Schema: public; Owner: alt_proc
 --
 
 CREATE TABLE public.events (
-    id integer NOT NULL,
+    event_id integer NOT NULL,
     task_id integer NOT NULL,
-    param character varying DEFAULT ''::character varying,
+    param character varying,
     ctime timestamp without time zone DEFAULT now() NOT NULL,
     status character varying DEFAULT 'WAIT'::character varying NOT NULL,
     params json
@@ -98,7 +98,7 @@ CREATE TABLE public.events (
 ALTER TABLE public.events OWNER TO alt_proc;
 
 --
--- TOC entry 199 (class 1259 OID 16784)
+-- TOC entry 199 (class 1259 OID 17085)
 -- Name: events_id_seq; Type: SEQUENCE; Schema: public; Owner: alt_proc
 --
 
@@ -114,21 +114,21 @@ CREATE SEQUENCE public.events_id_seq
 ALTER TABLE public.events_id_seq OWNER TO alt_proc;
 
 --
--- TOC entry 2898 (class 0 OID 0)
+-- TOC entry 2895 (class 0 OID 0)
 -- Dependencies: 199
 -- Name: events_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: alt_proc
 --
 
-ALTER SEQUENCE public.events_id_seq OWNED BY public.events.id;
+ALTER SEQUENCE public.events_id_seq OWNED BY public.events.event_id;
 
 
 --
--- TOC entry 200 (class 1259 OID 16786)
+-- TOC entry 200 (class 1259 OID 17087)
 -- Name: jobs; Type: TABLE; Schema: public; Owner: alt_proc
 --
 
 CREATE TABLE public.jobs (
-    id integer NOT NULL,
+    job_id integer NOT NULL,
     status character varying DEFAULT 'WAIT'::character varying NOT NULL,
     result character varying,
     todo boolean DEFAULT false NOT NULL,
@@ -145,7 +145,7 @@ CREATE TABLE public.jobs (
 ALTER TABLE public.jobs OWNER TO alt_proc;
 
 --
--- TOC entry 201 (class 1259 OID 16795)
+-- TOC entry 201 (class 1259 OID 17096)
 -- Name: jobs_id_seq; Type: SEQUENCE; Schema: public; Owner: alt_proc
 --
 
@@ -161,21 +161,21 @@ CREATE SEQUENCE public.jobs_id_seq
 ALTER TABLE public.jobs_id_seq OWNER TO alt_proc;
 
 --
--- TOC entry 2899 (class 0 OID 0)
+-- TOC entry 2896 (class 0 OID 0)
 -- Dependencies: 201
 -- Name: jobs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: alt_proc
 --
 
-ALTER SEQUENCE public.jobs_id_seq OWNED BY public.jobs.id;
+ALTER SEQUENCE public.jobs_id_seq OWNED BY public.jobs.job_id;
 
 
 --
--- TOC entry 202 (class 1259 OID 16797)
+-- TOC entry 202 (class 1259 OID 17098)
 -- Name: msgs; Type: TABLE; Schema: public; Owner: alt_proc
 --
 
 CREATE TABLE public.msgs (
-    id integer NOT NULL,
+    msg_id integer NOT NULL,
     msg character varying NOT NULL,
     type character varying NOT NULL,
     active boolean DEFAULT true NOT NULL,
@@ -192,7 +192,7 @@ CREATE TABLE public.msgs (
 ALTER TABLE public.msgs OWNER TO alt_proc;
 
 --
--- TOC entry 203 (class 1259 OID 16808)
+-- TOC entry 203 (class 1259 OID 17109)
 -- Name: msgs_id_seq; Type: SEQUENCE; Schema: public; Owner: alt_proc
 --
 
@@ -208,21 +208,21 @@ CREATE SEQUENCE public.msgs_id_seq
 ALTER TABLE public.msgs_id_seq OWNER TO alt_proc;
 
 --
--- TOC entry 2900 (class 0 OID 0)
+-- TOC entry 2897 (class 0 OID 0)
 -- Dependencies: 203
 -- Name: msgs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: alt_proc
 --
 
-ALTER SEQUENCE public.msgs_id_seq OWNED BY public.msgs.id;
+ALTER SEQUENCE public.msgs_id_seq OWNED BY public.msgs.msg_id;
 
 
 --
--- TOC entry 204 (class 1259 OID 16810)
+-- TOC entry 204 (class 1259 OID 17111)
 -- Name: runs; Type: TABLE; Schema: public; Owner: alt_proc
 --
 
 CREATE TABLE public.runs (
-    id integer NOT NULL,
+    run_id integer NOT NULL,
     script_id integer NOT NULL,
     result character varying,
     stime timestamp without time zone,
@@ -236,7 +236,7 @@ CREATE TABLE public.runs (
 ALTER TABLE public.runs OWNER TO alt_proc;
 
 --
--- TOC entry 205 (class 1259 OID 16817)
+-- TOC entry 205 (class 1259 OID 17118)
 -- Name: runs_id_seq; Type: SEQUENCE; Schema: public; Owner: alt_proc
 --
 
@@ -252,21 +252,21 @@ CREATE SEQUENCE public.runs_id_seq
 ALTER TABLE public.runs_id_seq OWNER TO alt_proc;
 
 --
--- TOC entry 2901 (class 0 OID 0)
+-- TOC entry 2898 (class 0 OID 0)
 -- Dependencies: 205
 -- Name: runs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: alt_proc
 --
 
-ALTER SEQUENCE public.runs_id_seq OWNED BY public.runs.id;
+ALTER SEQUENCE public.runs_id_seq OWNED BY public.runs.run_id;
 
 
 --
--- TOC entry 206 (class 1259 OID 16819)
+-- TOC entry 206 (class 1259 OID 17120)
 -- Name: scripts; Type: TABLE; Schema: public; Owner: alt_proc
 --
 
 CREATE TABLE public.scripts (
-    id integer NOT NULL,
+    script_id integer NOT NULL,
     job_id integer NOT NULL,
     iscript integer,
     cmd character varying NOT NULL,
@@ -281,7 +281,7 @@ CREATE TABLE public.scripts (
 ALTER TABLE public.scripts OWNER TO alt_proc;
 
 --
--- TOC entry 207 (class 1259 OID 16827)
+-- TOC entry 207 (class 1259 OID 17128)
 -- Name: scripts_id_seq; Type: SEQUENCE; Schema: public; Owner: alt_proc
 --
 
@@ -297,21 +297,21 @@ CREATE SEQUENCE public.scripts_id_seq
 ALTER TABLE public.scripts_id_seq OWNER TO alt_proc;
 
 --
--- TOC entry 2902 (class 0 OID 0)
+-- TOC entry 2899 (class 0 OID 0)
 -- Dependencies: 207
 -- Name: scripts_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: alt_proc
 --
 
-ALTER SEQUENCE public.scripts_id_seq OWNED BY public.scripts.id;
+ALTER SEQUENCE public.scripts_id_seq OWNED BY public.scripts.script_id;
 
 
 --
--- TOC entry 208 (class 1259 OID 16829)
+-- TOC entry 208 (class 1259 OID 17130)
 -- Name: tasks; Type: TABLE; Schema: public; Owner: alt_proc
 --
 
 CREATE TABLE public.tasks (
-    id integer NOT NULL,
+    task_id integer NOT NULL,
     type character varying NOT NULL,
     name character varying NOT NULL,
     status character varying DEFAULT 'PAUSE'::character varying NOT NULL,
@@ -327,7 +327,7 @@ CREATE TABLE public.tasks (
 ALTER TABLE public.tasks OWNER TO alt_proc;
 
 --
--- TOC entry 209 (class 1259 OID 16839)
+-- TOC entry 209 (class 1259 OID 17140)
 -- Name: tasks_id_seq; Type: SEQUENCE; Schema: public; Owner: alt_proc
 --
 
@@ -343,16 +343,16 @@ CREATE SEQUENCE public.tasks_id_seq
 ALTER TABLE public.tasks_id_seq OWNER TO alt_proc;
 
 --
--- TOC entry 2903 (class 0 OID 0)
+-- TOC entry 2900 (class 0 OID 0)
 -- Dependencies: 209
 -- Name: tasks_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: alt_proc
 --
 
-ALTER SEQUENCE public.tasks_id_seq OWNED BY public.tasks.id;
+ALTER SEQUENCE public.tasks_id_seq OWNED BY public.tasks.task_id;
 
 
 --
--- TOC entry 210 (class 1259 OID 16841)
+-- TOC entry 210 (class 1259 OID 17142)
 -- Name: values; Type: TABLE; Schema: public; Owner: alt_proc
 --
 
@@ -365,135 +365,126 @@ CREATE TABLE public."values" (
 ALTER TABLE public."values" OWNER TO alt_proc;
 
 --
--- TOC entry 2719 (class 2604 OID 16847)
--- Name: cmds id; Type: DEFAULT; Schema: public; Owner: alt_proc
+-- TOC entry 2720 (class 2604 OID 17148)
+-- Name: cmds cmd_id; Type: DEFAULT; Schema: public; Owner: alt_proc
 --
 
-ALTER TABLE ONLY public.cmds ALTER COLUMN id SET DEFAULT nextval('public.cmds_id_seq'::regclass);
-
-
---
--- TOC entry 2723 (class 2604 OID 16848)
--- Name: events id; Type: DEFAULT; Schema: public; Owner: alt_proc
---
-
-ALTER TABLE ONLY public.events ALTER COLUMN id SET DEFAULT nextval('public.events_id_seq'::regclass);
+ALTER TABLE ONLY public.cmds ALTER COLUMN cmd_id SET DEFAULT nextval('public.cmds_id_seq'::regclass);
 
 
 --
--- TOC entry 2728 (class 2604 OID 16849)
--- Name: jobs id; Type: DEFAULT; Schema: public; Owner: alt_proc
+-- TOC entry 2723 (class 2604 OID 17149)
+-- Name: events event_id; Type: DEFAULT; Schema: public; Owner: alt_proc
 --
 
-ALTER TABLE ONLY public.jobs ALTER COLUMN id SET DEFAULT nextval('public.jobs_id_seq'::regclass);
-
-
---
--- TOC entry 2734 (class 2604 OID 16850)
--- Name: msgs id; Type: DEFAULT; Schema: public; Owner: alt_proc
---
-
-ALTER TABLE ONLY public.msgs ALTER COLUMN id SET DEFAULT nextval('public.msgs_id_seq'::regclass);
+ALTER TABLE ONLY public.events ALTER COLUMN event_id SET DEFAULT nextval('public.events_id_seq'::regclass);
 
 
 --
--- TOC entry 2736 (class 2604 OID 16851)
--- Name: runs id; Type: DEFAULT; Schema: public; Owner: alt_proc
+-- TOC entry 2727 (class 2604 OID 17150)
+-- Name: jobs job_id; Type: DEFAULT; Schema: public; Owner: alt_proc
 --
 
-ALTER TABLE ONLY public.runs ALTER COLUMN id SET DEFAULT nextval('public.runs_id_seq'::regclass);
-
-
---
--- TOC entry 2739 (class 2604 OID 16852)
--- Name: scripts id; Type: DEFAULT; Schema: public; Owner: alt_proc
---
-
-ALTER TABLE ONLY public.scripts ALTER COLUMN id SET DEFAULT nextval('public.scripts_id_seq'::regclass);
+ALTER TABLE ONLY public.jobs ALTER COLUMN job_id SET DEFAULT nextval('public.jobs_id_seq'::regclass);
 
 
 --
--- TOC entry 2744 (class 2604 OID 16853)
--- Name: tasks id; Type: DEFAULT; Schema: public; Owner: alt_proc
+-- TOC entry 2733 (class 2604 OID 17151)
+-- Name: msgs msg_id; Type: DEFAULT; Schema: public; Owner: alt_proc
 --
 
-ALTER TABLE ONLY public.tasks ALTER COLUMN id SET DEFAULT nextval('public.tasks_id_seq'::regclass);
+ALTER TABLE ONLY public.msgs ALTER COLUMN msg_id SET DEFAULT nextval('public.msgs_id_seq'::regclass);
 
 
 --
--- TOC entry 2746 (class 2606 OID 16855)
+-- TOC entry 2735 (class 2604 OID 17152)
+-- Name: runs run_id; Type: DEFAULT; Schema: public; Owner: alt_proc
+--
+
+ALTER TABLE ONLY public.runs ALTER COLUMN run_id SET DEFAULT nextval('public.runs_id_seq'::regclass);
+
+
+--
+-- TOC entry 2738 (class 2604 OID 17153)
+-- Name: scripts script_id; Type: DEFAULT; Schema: public; Owner: alt_proc
+--
+
+ALTER TABLE ONLY public.scripts ALTER COLUMN script_id SET DEFAULT nextval('public.scripts_id_seq'::regclass);
+
+
+--
+-- TOC entry 2743 (class 2604 OID 17154)
+-- Name: tasks task_id; Type: DEFAULT; Schema: public; Owner: alt_proc
+--
+
+ALTER TABLE ONLY public.tasks ALTER COLUMN task_id SET DEFAULT nextval('public.tasks_id_seq'::regclass);
+
+
+--
+-- TOC entry 2745 (class 2606 OID 17156)
 -- Name: cmds cmds_pk; Type: CONSTRAINT; Schema: public; Owner: alt_proc
 --
 
 ALTER TABLE ONLY public.cmds
-    ADD CONSTRAINT cmds_pk PRIMARY KEY (id);
+    ADD CONSTRAINT cmds_pk PRIMARY KEY (cmd_id);
 
 
 --
--- TOC entry 2748 (class 2606 OID 16857)
+-- TOC entry 2747 (class 2606 OID 17158)
 -- Name: events events_pk; Type: CONSTRAINT; Schema: public; Owner: alt_proc
 --
 
 ALTER TABLE ONLY public.events
-    ADD CONSTRAINT events_pk PRIMARY KEY (id);
+    ADD CONSTRAINT events_pk PRIMARY KEY (event_id);
 
 
 --
--- TOC entry 2750 (class 2606 OID 16859)
+-- TOC entry 2749 (class 2606 OID 17160)
 -- Name: jobs jobs_pk; Type: CONSTRAINT; Schema: public; Owner: alt_proc
 --
 
 ALTER TABLE ONLY public.jobs
-    ADD CONSTRAINT jobs_pk PRIMARY KEY (id);
+    ADD CONSTRAINT jobs_pk PRIMARY KEY (job_id);
 
 
 --
--- TOC entry 2752 (class 2606 OID 16861)
+-- TOC entry 2751 (class 2606 OID 17162)
 -- Name: msgs msgs_pk; Type: CONSTRAINT; Schema: public; Owner: alt_proc
 --
 
 ALTER TABLE ONLY public.msgs
-    ADD CONSTRAINT msgs_pk PRIMARY KEY (id);
+    ADD CONSTRAINT msgs_pk PRIMARY KEY (msg_id);
 
 
 --
--- TOC entry 2754 (class 2606 OID 16863)
+-- TOC entry 2753 (class 2606 OID 17164)
 -- Name: runs runs_pk; Type: CONSTRAINT; Schema: public; Owner: alt_proc
 --
 
 ALTER TABLE ONLY public.runs
-    ADD CONSTRAINT runs_pk PRIMARY KEY (id);
+    ADD CONSTRAINT runs_pk PRIMARY KEY (run_id);
 
 
 --
--- TOC entry 2756 (class 2606 OID 16865)
+-- TOC entry 2755 (class 2606 OID 17166)
 -- Name: scripts scripts_pk; Type: CONSTRAINT; Schema: public; Owner: alt_proc
 --
 
 ALTER TABLE ONLY public.scripts
-    ADD CONSTRAINT scripts_pk PRIMARY KEY (id);
+    ADD CONSTRAINT scripts_pk PRIMARY KEY (script_id);
 
 
 --
--- TOC entry 2758 (class 2606 OID 16867)
+-- TOC entry 2757 (class 2606 OID 17168)
 -- Name: tasks tasks_pk; Type: CONSTRAINT; Schema: public; Owner: alt_proc
 --
 
 ALTER TABLE ONLY public.tasks
-    ADD CONSTRAINT tasks_pk PRIMARY KEY (id);
+    ADD CONSTRAINT tasks_pk PRIMARY KEY (task_id);
 
 
 --
--- TOC entry 2760 (class 2606 OID 16869)
--- Name: tasks tasks_un; Type: CONSTRAINT; Schema: public; Owner: alt_proc
---
-
-ALTER TABLE ONLY public.tasks
-    ADD CONSTRAINT tasks_un UNIQUE (name);
-
-
---
--- TOC entry 2762 (class 2606 OID 16871)
+-- TOC entry 2759 (class 2606 OID 17172)
 -- Name: values values_pk; Type: CONSTRAINT; Schema: public; Owner: alt_proc
 --
 
@@ -502,51 +493,51 @@ ALTER TABLE ONLY public."values"
 
 
 --
--- TOC entry 2763 (class 2606 OID 16872)
+-- TOC entry 2760 (class 2606 OID 17173)
 -- Name: events events_tasks_fk; Type: FK CONSTRAINT; Schema: public; Owner: alt_proc
 --
 
 ALTER TABLE ONLY public.events
-    ADD CONSTRAINT events_tasks_fk FOREIGN KEY (task_id) REFERENCES public.tasks(id) ON UPDATE CASCADE ON DELETE CASCADE;
+    ADD CONSTRAINT events_tasks_fk FOREIGN KEY (task_id) REFERENCES public.tasks(task_id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --
--- TOC entry 2764 (class 2606 OID 16877)
+-- TOC entry 2761 (class 2606 OID 17178)
 -- Name: jobs jobs_events_fk; Type: FK CONSTRAINT; Schema: public; Owner: alt_proc
 --
 
 ALTER TABLE ONLY public.jobs
-    ADD CONSTRAINT jobs_events_fk FOREIGN KEY (event_id) REFERENCES public.events(id) ON UPDATE CASCADE ON DELETE CASCADE;
+    ADD CONSTRAINT jobs_events_fk FOREIGN KEY (event_id) REFERENCES public.events(event_id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --
--- TOC entry 2765 (class 2606 OID 16882)
+-- TOC entry 2762 (class 2606 OID 17183)
 -- Name: msgs msgs_scripts_fk; Type: FK CONSTRAINT; Schema: public; Owner: alt_proc
 --
 
 ALTER TABLE ONLY public.msgs
-    ADD CONSTRAINT msgs_scripts_fk FOREIGN KEY (script_id) REFERENCES public.scripts(id) ON UPDATE CASCADE ON DELETE CASCADE;
+    ADD CONSTRAINT msgs_scripts_fk FOREIGN KEY (script_id) REFERENCES public.scripts(script_id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --
--- TOC entry 2766 (class 2606 OID 16887)
+-- TOC entry 2763 (class 2606 OID 17188)
 -- Name: runs runs_scripts_fk; Type: FK CONSTRAINT; Schema: public; Owner: alt_proc
 --
 
 ALTER TABLE ONLY public.runs
-    ADD CONSTRAINT runs_scripts_fk FOREIGN KEY (script_id) REFERENCES public.scripts(id) ON UPDATE CASCADE ON DELETE CASCADE;
+    ADD CONSTRAINT runs_scripts_fk FOREIGN KEY (script_id) REFERENCES public.scripts(script_id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --
--- TOC entry 2767 (class 2606 OID 16892)
+-- TOC entry 2764 (class 2606 OID 17193)
 -- Name: scripts scripts_jobs_fk; Type: FK CONSTRAINT; Schema: public; Owner: alt_proc
 --
 
 ALTER TABLE ONLY public.scripts
-    ADD CONSTRAINT scripts_jobs_fk FOREIGN KEY (job_id) REFERENCES public.jobs(id) ON UPDATE CASCADE ON DELETE CASCADE;
+    ADD CONSTRAINT scripts_jobs_fk FOREIGN KEY (job_id) REFERENCES public.jobs(job_id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
--- Completed on 2018-10-27 16:41:43
+-- Completed on 2018-11-13 18:23:31
 
 --
 -- PostgreSQL database dump complete

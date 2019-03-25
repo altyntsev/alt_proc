@@ -1,20 +1,11 @@
 import alt_path
-from header import *
+from _header import *
 
 def connect():
 
-    cfg = alt.cfg.read()
-    if cfg.hub:
-        host = alt.cfg.host()
-        db_name = 'alt_proc-%s' % host
-    else:
-        db_name = 'alt_proc'
-    db_cfg = alt.cfg.secure('alt_proc').db
-    if not cfg.production:
-        n_try = 1
-    else:
-        n_try = 10
-    db = alt.postgresql.DB(db=db_name, user=db_cfg.user, pwd=db_cfg.pwd, n_try=n_try)
+    pwd_file = alt.cfg.read_global('alt_proc').pwd_file
+    pwd = alt.cfg.read(pwd_file).db.pwd
+    db = alt.pg.DB(db='alt_proc', user='alt_proc', pwd=pwd, schema='alt_proc')
 
     return db
 

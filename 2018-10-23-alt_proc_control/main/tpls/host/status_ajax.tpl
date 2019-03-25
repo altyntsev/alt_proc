@@ -1,14 +1,16 @@
 <form>
     <div class="grid-x grid-padding-x">
         <label>Host:</label>
-        <div class="{{ host_status }}" style="padding:0 0 0 0.5rem;">
+        <div class="{{ host_status }}">
             <span>{{ host_status }}</span>
-            <select data-arrow-only name="host_status"
-                    onchange="send_cmd('SET_HOST_STATUS', {status: $(this).val()})">
-                <option {% if host_status == 'RUN'  %}selected{% endif %} value="RUN">RUN</option>
-                <option {% if host_status == 'PAUSE'  %}selected{% endif %} value="PAUSE">PAUSE</option>
-                <option {% if host_status == 'EXIT'  %}selected{% endif %} value="EXIT">EXIT</option>
-            </select>
+            {% if 'admin' in _roles %}
+                <select data-arrow-only name="host_status"
+                        onchange="send_cmd('SET_HOST_STATUS', {status: $(this).val()})">
+                    <option {% if host_status == 'RUN'  %}selected{% endif %} value="RUN">RUN</option>
+                    <option {% if host_status == 'PAUSE'  %}selected{% endif %} value="PAUSE">PAUSE</option>
+                    <option {% if host_status == 'EXIT'  %}selected{% endif %} value="EXIT">EXIT</option>
+                </select>
+            {% endif %}
         </div>
         <div class="large-1">
             {{ manager_mtime }}
@@ -18,38 +20,6 @@
         {% endif %}
     </div>
 </form>
-
-{% if msgs %}
-    <div style="height: 5rem; overflow-y: auto; display:inline-block; border:2px solid #335c32;">
-        <table>
-            <thead>
-                <th>mtime</th><th>time</th><th>job_id</th><th>type</th>
-                <th>msg</th><th>task</th><th>key</th><th>script</th><th>read</th>
-            </thead>
-            {% for msg in msgs %}
-                <tr {% if not msg.active %}style="background-color: lightgrey;"{% endif %}>
-                    <td>{{msg.mtime}}</td>
-                    <td>{{msg.stime}} - {{msg.etime}} / {{ msg.diff }} {{ msg.n_runs }}</td>
-                    <td>{{msg.job_id}}</td>
-                    {% if msg.todo %}
-                        <td class="TODO">{{msg.type}}</td>
-                    {% else %}
-                        <td class="{{ msg.type }}">{{msg.type}}</td>
-                    {% endif %}
-                    <td>{{msg.msg}}</td>
-                    <td>{{msg.name}}</td>
-                    <td>{{msg.key}}</td>
-                    <td>{{msg.cmd}}</td>
-                    <td>
-                        {% if not msg.read %}
-                            <input type="button" value="OK" onclick="msg_read([{{ msg.id }}],this)" />
-                        {% endif %}
-                    </td>
-                </tr>
-            {% endfor %}
-        </table>
-    </div>
-{% endif %}
 
 <table>
     <thead><tr>
@@ -68,13 +38,17 @@
             <td>{{ task.project }}</td>
             <td class="{{ task.status }}">
                 <span>{{task.name}}</span>
-                <select data-arrow-only name="task_status_{{ task.name }}"
-                    onchange="send_cmd('SET_TASK_STATUS', { task_id:{{ task.id }}, status: $(this).val() });"
-                >
-                    <option {% if task.status == 'ACTIVE' %}selected{% endif %} value="ACTIVE">ACTIVE</option>
-                    <option {% if task.status == 'PAUSE'  %}selected{% endif %} value="PAUSE">PAUSE</option>
-                    <option {% if task.status == 'DEBUG'  %}selected{% endif %} value="DEBUG">DEBUG</option>
-                </select>
+                {% if 'admin' in _roles %}
+                    <select data-arrow-only name="task_status_{{ task.name }}"
+                        onchange="send_cmd('SET_TASK_STATUS',
+                                { task_id:{{ task.task_id }}, status: $(this).val() });"
+                    >
+                        <option {% if task.status == 'ACTIVE' %}selected{% endif %} value="ACTIVE">ACTIVE</option>
+                        <option {% if task.status == 'PAUSE'  %}selected{% endif %} value="PAUSE">PAUSE</option>
+                        <option {% if task.status == 'DEBUG'  %}selected{% endif %} value="DEBUG">DEBUG</option>
+                        <option {% if task.status == 'TODO'  %}selected{% endif %} value="TODO">TODO</option>
+                    </select>
+                {% endif %}
             </td>
             {% include 'host/status_table.tpl' %}
         </tr>

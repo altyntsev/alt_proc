@@ -1,0 +1,5 @@
+scripts:
+    -   cmd: resources/resources1.py
+        resources:
+            R1: 100
+    -   cmd: resources/resources2.py

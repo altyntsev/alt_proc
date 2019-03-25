@@ -1,0 +1,4 @@
+scripts:
+    -   cmd: basic/basic1.py
+    -   cmd: basic/basic2.py
+    -   cmd: basic/basic3.py

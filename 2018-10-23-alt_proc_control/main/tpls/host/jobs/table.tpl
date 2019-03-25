@@ -5,13 +5,13 @@
     </tr></thead>
     {% for job in jobs %}
         <tr>
-            <td>{{job.id}}</td>
+            <td>{{job.job_id}}</td>
             <td>{{job.mtime}}</td>
             <td>{{job.task}}</td>
             {% if job.type=='PERIODIC' %}
                 <td class="tac"><i class="fa fa-hourglass"></i></td>
             {% else %}
-                <td class="tac">{{job.param}}</td>
+                <td nowrap>{{job.param}}</td>
             {% endif %}
 
             {% if not job.result %}
@@ -31,7 +31,7 @@
                 {% endif %}
             {% endif %}
 
-            <td onclick="window.location.href='{{_root}}/host/job/{{ host }}/{{job.id}}/';">
+            <td onclick="window.location.href='{{_root}}/host/job/{{job.job_id}}/';">
                 {% for script in job.scripts %}
                     <span class="{{script.status}}_{{script.result}} script">{{script.name}}</span>
                 {% endfor %}

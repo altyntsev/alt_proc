@@ -1,4 +1,0 @@
-scripts:
-    -   cmd: simple1.py
-    -   cmd: simple2.py
-    -   cmd: simple3.py

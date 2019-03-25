@@ -4,7 +4,7 @@
     <script>
         function refresh(){
                 $.ajax({
-                    url: '{{ _root }}/host/status_ajax/{{ host }}/',
+                    url: '{{ _root }}/host/status_ajax/',
                     success: function (response) {
                         response = JSON.parse(response);
                         $('#html_ajax').html(response.html);

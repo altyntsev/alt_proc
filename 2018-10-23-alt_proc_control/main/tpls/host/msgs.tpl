@@ -45,7 +45,7 @@
             <td>{{msg.cmd}}</td>
             <td>
                 {% if not msg.read %}
-                    <input type="button" value="OK" onclick="msg_read([{{ msg.id }}])" />
+                    <input type="button" value="OK" onclick="msg_read([{{ msg.msg_id }}])" />
                 {% endif %}
             </td>
         </tr>

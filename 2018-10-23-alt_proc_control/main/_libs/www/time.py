@@ -4,6 +4,9 @@ from alt.dict_ import dict_
 
 def diff_format(dt0, dt1=None, tz=None):
 
+    if dt0 is None:
+        return ''
+
     if not dt1:
         dt1 = datetime.now()
         if tz:

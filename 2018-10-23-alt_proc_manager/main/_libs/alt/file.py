@@ -1,37 +1,47 @@
-import shutil, os, glob, re
-from alt.dict_ import dict_
-import alt.system 
-import traceback, platform, ctypes, pickle
+import shutil
+import os
+import glob
+import re
+import sys
+import platform
+import ctypes
+import pickle
+import alt.cfg
+import alt.system
+import builtins
+
+def slash(path):
+
+    return path.replace('\\','/')
+
+def touch(filename):
+
+    mkdir( dir(filename) )
+    open(filename,'w').close()
 
 def name_ext(filename):
     
     filename = slash(filename)
-    
     pos0 = filename.rfind('/')+1
-    if pos0==0:
-        pos0 = filename.rfind('\\')+1
-    return filename[pos0:]               
+
+    return filename[pos0:]
 
 def ext(filename):
     
     filename = slash(filename)
-    
-    pos0 = filename.rfind('.')
-    if pos0==-1:
+    pos0 = filename.rfind('/')+1
+    pos1 = filename.rfind('.')
+    if pos1==-1 or pos1<pos0:
         return ''
-    return filename[pos0+1:]
+
+    return filename[pos1+1:]
         
 def name(filename):
     
     filename = slash(filename)
-    
     if isdir(filename):
         filename = filename[:-1]
-        
     pos0 = filename.rfind('/')+1
-    if pos0==0:
-        pos0 = filename.rfind('\\')+1
-
     pos1 = filename.rfind('.')
     if pos1==-1 or pos1<pos0:
         pos1 = len(filename)
@@ -44,86 +54,79 @@ def isdir(name):
         return True
     else:
         return False
-    
-def prepare_src_dest(src, dest, overwrite=False, makedir=True):
-    
-    script = Proc()
-    
-    if isinstance(src,(str,unicode)):
-        if re.search(r'[*?]', src): # mask
-            srclist = glob.glob(src)
-            if not srclist:
-                print('Nothing to copy/move')
-                return (None,None)
-            if not isinstance(dest,(str,unicode)):
-                raise Exception('Destination is not a string')
-            if not isdir(dest):
-                raise Exception('Destination is not a directory',dest)
-        else:
-            srclist = [src]
 
-    if isinstance(src,list):
-        srclist = src
-        
-    if isinstance(dest,(str,unicode)):
-        if isdir(dest):
-            if not exists(dest) and not makedir:
-                if script:
-                    script.warn('Destination does not exists', dict_(dest=dest) )
-                    script.exit(restart_after = 5)
-                else:    
-                    raise Exception('Destination does not exists',dest)
-            else:
-                mkdir(dest)
-            destlist = []
-            for srcfile in srclist:
-                destfile = dest + os.path.basename(srcfile)
-                if os.path.exists(destfile) and not overwrite:
-                    destlist.append('')
-                    print('Destination file exists', destfile) 
-                else:
-                    destlist.append(destfile)
-        else:
-            destlist = [dest]
-            
-    if isinstance(dest,list):
-        destlist = dest
-        
-    return (srclist,destlist)            
-    
-def copy(src, dest, overwrite=True, makedir=True):
-    
-    srclist, destlist = prepare_src_dest(src, dest, overwrite=overwrite, makedir=makedir)
-    if not srclist:
-        return
+def dir(filename):
 
-    for i, srcfile in enumerate(srclist):
-        if destlist[i]=='':
+    return os.path.dirname(filename) + '/'
+
+def abspath(path):
+
+    if isdir(path):
+        return slash(os.path.abspath(path)) + '/'
+    else:
+        return slash(os.path.abspath(path))
+
+def erase_dir(directory, exclude=[]):
+
+    if not isdir(directory):
+        raise Exception('Arg is not a directory')
+    for root, dirs, files in os.walk(directory, topdown=False):
+        for file in files:
+            if file in exclude:
+                continue
+            os.remove(os.path.join(root,file))
+        for dir in dirs:
+            os.rmdir(os.path.join(root,dir))
+
+def prepare_src_dest(src, dest):
+
+    if isinstance(src, str) and re.search(r'[*?]', src) and isdir(dest):
+        src_list = glob.glob(src)
+        dest_list = [dest + os.path.basename(src_file) for src_file in src_list]
+        return src_list, dest_list
+
+    if isinstance(src, str) and isdir(dest):
+        return [src], [dest + os.path.basename(src)]
+
+    if isinstance(src, str) and isinstance(dest, str):
+        return [src], [dest]
+
+    if isinstance(src, list) and isinstance(dest, list):
+        if len(src)!=len(dest):
+            raise Exception('Src and Dest lists has different length ')
+        return src, dest
+
+    raise Exception('Unknown copy/move mode')
+
+def copy(src, dest, overwrite=True, mkdir=True, move=False):
+
+    src_list, dest_list = prepare_src_dest(src, dest)
+
+    for src_file, dest_file in builtins.zip(src_list, dest_list):
+        if not overwrite and os.path.exists(dest_file):
             continue
-        destfile = destlist[i]
-        print('Copying ', srcfile, destfile)
-        shutil.copy2( srcfile, destfile + '~')
-        shutil.move( destfile + '~', destfile)
-                    
-def move(src, dest):
-    
-    srclist, destlist = prepare_src_dest(src, dest)
-    if not srclist:
-        return
-    
-    for i, srcfile in enumerate(srclist):
-        if destlist[i]=='':
-            continue
-        print('Moving ', srcfile, destlist[i])
-        shutil.move(srcfile, destlist[i])
-    
+        if mkdir and not os.path.exists(os.path.dirname(dest_file)):
+            sys.modules[__name__].mkdir(dir(dest_file))
+        print('Copying', src_file, dest_file)
+        if move:
+            shutil.move(src_file, dest_file)
+        else:
+            shutil.copy2( src_file, dest_file + '~')
+            shutil.move( dest_file + '~', dest_file)
+
+def move(src, dest, overwrite=True, mkdir=True):
+
+    copy(src, dest, overwrite=overwrite, mkdir=mkdir, move=True)
+
 def mkdir(dir):
-    
+
+    if dir=='':
+        return
     if not os.path.exists(dir):
         os.makedirs(dir)
-        
+
 def delete(mask, ignore=False):
-    
+
     if isdir(mask) or os.path.isdir(mask):
         if not os.path.exists(mask):
             return
@@ -134,7 +137,7 @@ def delete(mask, ignore=False):
                 print('Can not delete ' + mask)
             else:
                 raise
-    else:    
+    else:
         for file in glob.glob(mask):
             try:
                 os.remove(file)
@@ -143,85 +146,9 @@ def delete(mask, ignore=False):
                     print('Can not delete ' + mask)
                 else:
                     raise
-        
-def exists(src):
-    
-    if not isinstance(src,(str,unicode)):
-        raise Exception('Arg is not a string')
-    if isdir(src):
-        return os.path.exists(src[:-1])
-    else:
-        return os.path.exists(src)
-    
-def clear(directory, exclude=[]):
-    
-    if not isdir(directory):
-        raise Exception('Arg is not a directory')
-    for root, dirs, files in os.walk(directory, topdown=False):
-        for file in files:
-            if file in exclude:
-                continue
-            os.remove(os.path.join(root,file))
-        for dir in dirs:
-            os.rmdir(os.path.join(root,dir))
-            
-def dir(path):
-    
-    return os.path.dirname(path) + '/'
 
-def delivery(src,dest,metadata=True):
-    
-    srclist, destlist = prepare_src_dest(src, dest)
-    if not srclist:
-        return
-
-    for i, srcfile in enumerate(srclist):
-        try:
-            if destlist[i]=='':
-                continue
-            destfile = destlist[i]
-            print('Copying ', srcfile, destfile)
-            if metadata:
-                shutil.copy2( srcfile, destfile + '~')
-            else:    
-                shutil.copyfile( srcfile, destfile + '~')
-            shutil.move( destfile + '~', destfile)
-        except Exception:
-            script = Proc()
-            traceback.print_exc()
-            script.warn('Failed to copy', dict_(srcfile=srcfile, destfile=destfile) )
-            script.exit(restart_after=5)
-            
-def zip(zip_file, zip_list):
-    
-    script = Proc()
-    if not isinstance(zip_list,list):
-        raise Exception('zip_list must be list')
-    if os.name=='nt':
-        cmd = script.root_dir + 'soft/7-zip/7z a -bd %s %s' % (zip_file, ' '.join(zip_list))
-    else:    
-        cmd = 'zip -j %s %s' % (zip_file, ' '.join(zip_list))
-    system.run(cmd)    
-
-def unzip(zip_file,out_dir,include='*'):
-    
-    script = Proc()
-    include = ' '.join(include) 
-    cmd = script.root_dir + 'soft/7-Zip/7z.exe e -r -y -o%s %s %s' % \
-        (out_dir,zip_file,include)
-    system.run(cmd)     
-    
-def slash(path):
-    
-    return path.replace('\\','/')
-
-def touch(filename):
-
-    mkdir( dir(filename) )    
-    open(filename,'w').close()
-    
 def size(path):
-    
+
     if isdir(path) or os.path.isdir(path):
         sz = 0
         for root, dirs, files in os.walk(path):
@@ -242,32 +169,11 @@ def free_space(folder):
         st = os.statvfs(folder)
         free = st.f_bavail * st.f_frsize
 
-    return int(free/1e9)
-
-def dump(filename, data):
-    
-    with open(filename,'wb') as f:
-        cPickle.dump(data, f)
-    
-def load(filename):
-    
-    if not exists(filename):
-        return None
-    with open(filename,'rb') as f:
-        data = cPickle.load(f)
-    return data
-    
-def file_mtime_iso(filename):
-
-    from datetime import datetime
-
-    mtime = os.stat(filename).st_mtime
-    mtime = datetime.fromtimestamp(mtime)
-    return mtime.strftime('%Y-%m-%d %H:%M:%S')
+    return int(free)
 
 def read(filename):
     
-    with open(filename) as f:
+    with open(filename, encoding='utf-8') as f:
         return f.read()
 
 def write(filename, text):
@@ -275,36 +181,63 @@ def write(filename, text):
     if isinstance(text, list):
         text = '\n'.join(text)
     
-    with open(filename,'w') as f:
+    with open(filename, 'w', newline='\n') as f:
         f.write(text)
     
 def readlines(filename):
-    
-    with open(filename) as f:
-        
-        return f.readlines()
-    
-def abspath(path):
 
-    abspath_ = os.path.abspath(path).replace('\\','/').replace('//','/')
-    if path[-1] in ['\\','/']:
-        abspath_ += '/'
-
-    return abspath_
+    return read(filename).split('\n')
 
 def wd():
 
-    return abspath(os.getcwd() + '/')
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    return slash(os.getcwd()) + '/'
+
+def pkl_save(filename, data, mkdir_=False):
+
+    if mkdir_:
+        dir_ = os.path.dirname(filename)
+        mkdir(dir_)
+
+    with open(filename,'wb') as f:
+        pickle.dump(data, f)
+
+def pkl_load(filename):
+
+    with open(filename,'rb') as f:
+        data = pickle.load(f)
+
+    return data
+
+def zip(zip_file, include):
+
+    if isinstance(include, list):
+        include = ' '.join(include)
+    if os.name=='nt':
+        cmd = alt.cfg.root_dir() + 'tools/7-zip/7z a -bd %s %s'
+    else:
+        cmd = '7z a %s %s'
+    alt.system.run(cmd % (zip_file, include))
+
+def unzip(zip_file, dest='.', include=''):
+
+    if isinstance(include, list):
+        include = ' '.join(include)
+    if os.name=='nt':
+        zip_exe = alt.cfg.root_dir() + 'tools/7-Zip/7z.exe'
+    else:
+        zip_exe = '7z'
+    cmd = '%s e -r -y -o%s %s %s' % (zip_exe, dest, zip_file, include)
+    alt.system.run(cmd)
+
+def dir_size(dir):
+
+    sz = 0
+    for root, dirs, files in os.walk(dir):
+        for file_ in files:
+            sz += os.stat(os.path.join(root,file_)).st_size
+
+    return sz
+
+def date_dir(date):
+
+    return date[:4] + '/' + date + '/'

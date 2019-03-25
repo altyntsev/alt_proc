@@ -1,12 +1,12 @@
 {% if task.type=='EVENT' %}
 
-    {% if task.events!=0 %}
+    {% if task.events %}
         <td class="EVENTS">{{task.events}}</td>
     {% else %}
         <td></td>
     {% endif %}
 
-    {% if task.wait!=0 %}
+    {% if task.wait %}
         <td class="WAIT">{{task.wait}}</td>
     {% else %}
         <td></td>
@@ -16,55 +16,55 @@
     {% else %}
         <td></td>
     {% endif %}
-    {% if task.wait_todo!=0 %}
+    {% if task.wait_todo %}
         <td class="WAIT_TODO">{{task.wait_todo}}</td>
     {% else %}
         <td></td>
     {% endif %}
 
-    {% if task.run!=0 %}
+    {% if task.run %}
         <td class="RUN">{{task.run}}</td>
     {% else %}
         <td></td>
     {% endif %}
-    {% if task.run_fatal!=0 %}
+    {% if task.run_fatal %}
         <td class="RUN_FATAL">{{task.run_fatal}}</td>
     {% else %}
         <td></td>
     {% endif %}
-    {% if task.run_todo!=0 %}
+    {% if task.run_todo %}
         <td class="RUN_TODO">{{task.run_todo}}</td>
     {% else %}
         <td></td>
     {% endif %}
 
-    {% if task.done!=0 %}
+    {% if task.done %}
         <td class="SUCCESS">{{task.done}}</td>
     {% else %}
         <td></td>
     {% endif %}
-    {% if task.done_fatal!=0 %}
+    {% if task.done_fatal %}
         <td class="DONE_FATAL">{{task.done_fatal}}</td>
     {% else %}
         <td></td>
     {% endif %}
-    {%  if task.done_todo!=0 %}
+    {%  if task.done_todo %}
         <td class="TODO">{{task.done_todo}}</td>
     {% else %}
         <td></td>
     {% endif %}
 
-    {% if task.done_prev!=0 %}
+    {% if task.done_prev %}
         <td class="SUCCESS">{{task.done_prev}}</td>
     {% else %}
         <td></td>
     {% endif %}
-    {% if task.done_fatal_prev!=0 %}
+    {% if task.done_fatal_prev %}
         <td class="DONE_FATAL">{{task.done_fatal_prev}}</td>
     {% else %}
         <td></td>
     {% endif %}
-    {%  if task.done_todo_prev!=0 %}
+    {%  if task.done_todo_prev %}
         <td class="TODO">{{task.done_todo_prev}}</td>
     {% else %}
         <td></td>
@@ -93,7 +93,7 @@
 {% if 'job' in task %}
     {% set job=task.job %}
     <td>{{job.mtime_diff}}</td>
-    <td>{{job.param}}</td>
+    <td>{{job.param if job.param!=None}}</td>
     {% if not job.result %}
         <td class="{{job.status}}" colspan="2">{{job.status}}</td>
     {% elif job.status=='DONE' %}
@@ -111,7 +111,7 @@
         {% endif %}
     {% endif %}
     <td class="left aligned" style="padding: 0;"
-        onclick="window.location.href='{{ _root }}/host/job/{{ host }}/{{ job.id }}/'">
+        onclick="window.location.href='{{ _root }}/host/job/{{ job.job_id }}/'">
         {% for script in job.scripts %}
             <div class="{{script.status}}_{{script.result}} script">
                 {{script.name}}</div>

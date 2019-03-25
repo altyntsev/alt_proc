@@ -1,6 +1,17 @@
+function logout() {
+    if (confirm('Logout?')) {
+        $.ajax({
+            url: $$._root + '/logout/',
+            success: function () {
+                window.location.reload();
+            }
+        })
+    }
+}
+
 function send_cmd(name, params) {
     $.ajax({
-        url: $$._root + '/host/cmd/' + $$.host + '/',
+        url: $$._root + '/host/cmd/',
         method: 'post',
         contentType: "application/json; charset=utf-8",
         data: JSON.stringify({name: name, params: params}),
@@ -32,9 +43,10 @@ function send_cmd(name, params) {
 
 function msg_read(msg_ids) {
     $.ajax({
-        url: $$.root_host + '/msg_read/',
+        url: $$._root + '/host/msg_read/',
         method: 'post',
-        data: {msg_ids: JSON.stringify(msg_ids)},
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify({msg_ids: msg_ids}),
         success: function () {
             setInterval( window.location.reload(true), 1000);
         }

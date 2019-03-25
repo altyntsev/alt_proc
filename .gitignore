@@ -4,10 +4,10 @@
 !/*/main/**
 !/_cfg/**
 !.gitignore
+!LICENSE
+!README.md
 
 **/*.pyc
 **/.idea
 
 /_cfg/host.cfg
-!LICENSE
-!README.md

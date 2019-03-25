@@ -13,7 +13,7 @@ from alt.dict_ import dict_
 import alt.time
 import alt.cfg
 import alt.file
-import alt.postgresql
+import alt.pg
 
 import www.form
 import www.time

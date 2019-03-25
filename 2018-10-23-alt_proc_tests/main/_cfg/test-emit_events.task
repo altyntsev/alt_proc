@@ -1,0 +1,2 @@
+scripts:
+    -   cmd: emit_events.py
